@@ -1,22 +1,41 @@
 "use client";
 
+import { useState } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
-import { useState } from "react";
+import { Spinner } from "@/components/ui/Spinner"; // Spinnerコンポーネントを使用（適宜設定）
 
 export default function Home() {
+  const [inputText, setInputText] = useState("");
   const [response, setResponse] = useState("");
-  const [inputValue, setInputValue] = useState(""); // 入力値を管理する状態
+  const [loading, setLoading] = useState(false); // ローディング状態を管理
 
-  const getData = async () => {
+  // テキストをDifyのAPIに送信する関数
+  const handleClick = async () => {
+    setLoading(true); // 通信開始時にローディングをオン
+    setResponse(""); // 前回のレスポンスをクリア
+
+    try {
+      const res = await axios.post("/api/dify", { prompt: inputText });
+      await getGpt(res.data.result);
+      setResponse(res.data.result);
+    } catch (error) {
+      console.error("Error calling Dify API:", error);
+      setResponse("エラーが発生しました。もう一度お試しください。");
+    } finally {
+      setLoading(false); // 通信終了時にローディングをオフ
+    }
+  };
+
+  const getGpt = async (text: string) => {
     try {
       const response = await fetch("/api/openai", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: inputValue }), // 入力値を送信
+        body: JSON.stringify({ prompt: text }), // 入力値を送信
       });
       const data = await response.json();
       setResponse(data.result); // レスポンスを表示
@@ -27,21 +46,44 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-red-100 ">
-        <div className="flex flex-col items-start  ">
-          <div className="">お題をください</div>
-          <div className="flex items-center">
-            <Input
-              className="mr-6"
-              value={inputValue} // 入力値をバインド
-              onChange={(e) => setInputValue(e.target.value)} // 入力変更時に状態を更新
-            />
-            <Button onClick={getData}>Click me</Button>
-          </div>
-          <div>{response}</div> {/* レスポンスを表示 */}
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-red-100">
+      <div className="flex flex-col items-start">
+        <div>お題をください</div>
+        <div className="flex items-center">
+          <Input
+            className="mr-6"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <Button onClick={handleClick} disabled={loading}>
+            {loading ? "通信中..." : "Click me"}
+          </Button>
         </div>
+        <div>TTS</div>
+        <div className="flex items-center">
+          <Input
+            className="mr-6"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <Button disabled={loading}>{loading ? "通信中..." : "工事中"}</Button>
+        </div>
+
+        {/* ローディング中にインジケーターを表示 */}
+        {loading && (
+          <div className="mt-4">
+            <Spinner className="w-6 h-6 mr-2" />
+            通信中です。しばらくお待ちください...
+          </div>
+        )}
+
+        {/* 結果表示 */}
+        {!loading && response && (
+          <div className="mt-4 p-4 bg-white rounded-md shadow-md">
+            {response}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
