@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { prompt } = await req.json(); // リクエストボディからプロンプトを取得
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
-      voice: "alloy",
+      voice: "nova",
       input: prompt, // プロンプトを使って音声を生成
     });
 
