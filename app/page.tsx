@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { Howl } from "howler";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/Spinner"; // Spinnerコンポーネントを使用（適宜設定）
@@ -39,6 +40,14 @@ export default function Home() {
       });
       const data = await response.json();
       setResponse(data.result); // レスポンスを表示
+
+      // 音声ファイルの再生
+      const sound = new Howl({
+        src: ["/rakugo/speech.mp3"], // 音声ファイルのパス
+        onload: () => {
+          sound.play();
+        },
+      });
     } catch (error) {
       console.error(error);
       setResponse("エラーが発生しました"); // エラーメッセージを表示
@@ -46,7 +55,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen bg-red-100">
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-red-100 px-10">
       <div className="flex flex-col items-start">
         <div>お題をください</div>
         <div className="flex items-center">
@@ -58,15 +67,6 @@ export default function Home() {
           <Button onClick={handleClick} disabled={loading}>
             {loading ? "通信中..." : "Click me"}
           </Button>
-        </div>
-        <div>TTS</div>
-        <div className="flex items-center">
-          <Input
-            className="mr-6"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-          <Button disabled={loading}>{loading ? "通信中..." : "工事中"}</Button>
         </div>
 
         {/* ローディング中にインジケーターを表示 */}
