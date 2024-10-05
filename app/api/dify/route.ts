@@ -5,7 +5,7 @@ const API_KEY = process.env.DIFY_API_KEY; // 環境変数にAPIキーを設定�
 
 export async function POST(request: NextRequest) {
   const { prompt } = await request.json();
-  console.log(prompt)
+  console.log("プロンプト: "+prompt)
 
   try {
     // Dify APIに対してリクエストを送信
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       {
         inputs: { 'query': prompt },
         response_mode: "blocking",
-        user: "user-123", // ユーザーIDを指定（任意の文字列でOK）
+        user: "radio-app", // ユーザーIDを指定（任意の文字列でOK）
       },
       {
         headers: {
