@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
       }
-    );
+    );  
+    
 
     // Dify APIからのレスポンスを返す
     const result = response.data.data.outputs.text || "No result found";

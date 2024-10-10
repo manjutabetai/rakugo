@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, Suspense, useRef, useState } from "react";
+import { createContext, Suspense, useEffect, useRef, useState } from "react";
 import { useThree, useFrame, Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -12,6 +12,9 @@ import WavingNote from "./WavingNote";
 import MessageBoard from "./MessageBord";
 
 import Blob from "./_blobs/Blob";
+import axios from "axios";
+import { Html } from "next/document";
+import path from "path";
 
 interface IsPlayContextType {
   isPlay: boolean;
@@ -46,7 +49,7 @@ export default function Home() {
         <Blob />
         <group>
           <MessageBoard
-            title1="まいどおおきに浜村淳です。"
+            title1="git hub"
             title2="椿鬼奴のパチンコ大好き！"
             title3="明日の天気は・・"
           />

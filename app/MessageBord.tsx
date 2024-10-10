@@ -1,13 +1,10 @@
-"use client";
-
-import { useRef, useEffect, useState, useCallback, useContext } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import { Html } from "@react-three/drei";
 import axios from "axios";
 import { Howl } from "howler";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { context } from "@react-three/fiber";
 import { IsPlayContext } from "./page";
 
 type Props = {
@@ -22,6 +19,7 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
   const [volume, setVolume] = useState(0.05);
   const { isPlay, setIsPlay } = useContext(IsPlayContext);
   const [inputValue, setInputValue] = useState("");
+  const [soundUrl, setSoundUrl] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const backSoundRef = useRef<Howl | null>(null);
@@ -29,38 +27,31 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
 
   const formattedDate = useFormattedDate();
 
-  const updateInputValue = useCallback(() => {
-    if (inputRef.current) {
-      setInputValue(inputRef.current.value);
-    }
-  }, []);
-
-  useEffect(() => {
-    const input = inputRef.current;
-    if (input) {
-      input.addEventListener("input", updateInputValue);
-      return () => {
-        input.removeEventListener("input", updateInputValue);
-      };
-    }
-  }, [inputRef.current]);
-
   useEffect(() => {
     if (backSoundRef.current) {
       backSoundRef.current.volume(volume);
     }
   }, [volume]);
 
-  const handleClick = async () => {
+  const startDify = async () => {
     console.log("input value: " + inputValue);
 
     setLoading(true);
     setResponse("");
 
     try {
-      const res = await axios.post("/api/dify", { prompt: inputValue });
-      await getGpt(res.data.result);
-      setResponse(res.data.result);
+      const difyRes = await fetch("/api/dify", {
+        cache: "no-store",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: inputValue }),
+      });
+      const difyData = await difyRes.json();
+      if (difyData.result !== "No result found") {
+        await getGpt(difyData, inputValue);
+      } else {
+        alert("ニュース原稿の取得に失敗しました。もう一度お願いします。");
+      }
     } catch (error) {
       console.error("Error calling Dify API:", error);
       setResponse("エラーが発生しました。もう一度お試しください。");
@@ -69,35 +60,94 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
     }
   };
 
-  const getGpt = async (text: string) => {
+  const getGpt = async (prompt: string, inputValue: string) => {
     try {
       const response = await fetch("/api/openai", {
+        cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: text }),
+        body: JSON.stringify({ prompt: prompt, inputValue: inputValue }),
       });
-      console.log("gpy response: " + response);
+
+      // ステータスコードをログに出力
+      console.log(
+        "Fetch response status: ",
+        response.status,
+        response.statusText
+      );
+      if (!response.ok) {
+        console.error(
+          `Fetch error: ${response.status} - ${response.statusText}`
+        );
+        return;
+      }
+
+      console.log("getGpt response : " + response);
       const data = await response.json();
-      setResponse(data.result);
-      speech();
+      const filePath = data.url;
+      setSoundUrl(filePath);
+      // speech(filePath);
     } catch (error) {
       console.error(error);
       setResponse("エラーが発生しました");
     }
   };
 
-  const speech = () => {
+  const testSpeech = () => {
     speechSoundRef.current = new Howl({
-      src: ["/rakugo/speech.mp3"],
-      onload: () => speechSoundRef.current?.play(),
-      onend: () => backSoundRef.current?.stop(),
+      src: [
+        "https://qowgsmftnhetuvgiudox.supabase.co/storage/v1/object/sign/audio-bucket/audio/2024-10-06T20-33-57-350Z?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdWRpby1idWNrZXQvYXVkaW8vMjAyNC0xMC0wNlQyMC0zMy01Ny0zNTBaIiwiaWF0IjoxNzI4MjQ2ODQyLCJleHAiOjE3MjgyNDk4NDJ9.PjJcp3ZP19T0ZQIFrnsunvqYURmidC1-jx1Ecfd6Pw8",
+      ],
+      onload: () => {
+        console.log("音声ファイルが正常にロードされました");
+        speechSoundRef.current?.play();
+      },
+      format: ["mp3"], // 音声ファイルの形式を指定（省略可）
+
+      onloaderror: (id, error) => {
+        console.error("音声のロード中にエラーが発生しました:", error);
+      },
+      onplayerror: (id, error) => {
+        console.error("音声の再生中にエラーが発生しました:", error);
+        // 再度再生を試みる
+        if (speechSoundRef) {
+          speechSoundRef.current?.play();
+        }
+      },
     });
-    startBack();
+  };
+
+  const speech = (filePath: string) => {
+    if (!filePath || typeof filePath !== "string") {
+      console.error("再生するファイルパスが無効です:", filePath);
+      return;
+    }
+    console.log("speech()が受け取ったurl::" + filePath);
+    speechSoundRef.current = new Howl({
+      src: [filePath],
+      onload: () => {
+        console.log("音声ファイルが正常にロードされました");
+        speechSoundRef.current?.play();
+      },
+      onplayerror: (error) => {
+        console.error("音声の再生中にエラーが発生しました:", error);
+        speechSoundRef.current?.play(); // 自動的に再試行
+      },
+      onend: () => {
+        console.log("音声の再生が終了しました");
+        backSoundRef.current?.stop(); // 背景音を停止（必要であれば）
+      },
+      onloaderror: (id, error) => {
+        console.error("音声のロード中にエラーが発生しました:", error);
+      },
+    });
+    // startBack();
   };
 
   const startBack = () => {
     backSoundRef.current = new Howl({
       src: ["/rakugo/Sunny_Smiles.mp3"],
+      // src: ["/rakugo/保護犬_2024-10-05T20-51-25-971Z.mp3"],
       onload: () => {
         backSoundRef.current?.play();
         setIsPlay(true);
@@ -118,7 +168,9 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
       backSoundRef.current.stop();
     }
   };
-
+  useFrame(() => {
+    // testSpeech();
+  });
   return (
     <group position={[0, 1, -3]}>
       <Html position={[0, 0.5, 0.02]} transform occlude>
@@ -127,15 +179,36 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
           <ScrollingTitle title={title1} onClick={() => {}} />
           <ScrollingTitle title={title2} onClick={() => {}} />
           <ScrollingTitle title={title3} onClick={() => {}} />
-          <InputSection
-            inputRef={inputRef}
+          {/* <InputSection
+            inputValue={inputValue}
+            onInputChange={handleInputChange}
             loading={loading}
             handleClick={handleClick}
             isPlay={isPlay}
             soundStop={soundStop}
-            inputValue={inputValue}
+          /> */}
+          <Input
+            className="text-black"
+            onChange={(e) => setInputValue(e.target.value)}
           />
-          {/* 音量調整 */}
+          <Button
+            disabled={!inputValue}
+            onClick={startDify}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            {loading ? "通信中..." : "送信"}
+          </Button>
+          {isPlay && (
+            <Button className="ml-6" onClick={soundStop}>
+              STOP
+            </Button>
+          )}
+          {soundUrl && (
+            <div>
+              <audio controls src={soundUrl}></audio>
+            </div>
+          )}
+
           <div>
             <label htmlFor="volume">BGM:</label>
             <input
@@ -192,54 +265,72 @@ const ScrollingTitle = ({
     </div>
   );
 };
+import React, { useCallback } from "react";
+import { useFrame } from "@react-three/fiber";
 
 interface InputSectionProps {
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputValue: string;
   loading: boolean;
   handleClick: () => void;
   soundStop: () => void;
+  onInputChange: (value: string) => void;
   isPlay: boolean;
-  inputValue: string;
 }
 
 const InputSection = ({
-  inputRef,
+  inputValue,
   loading,
   handleClick,
   isPlay,
   soundStop,
-  inputValue,
-}: InputSectionProps) => (
-  <div className="p-4 bg-white bg-opacity-80 rounded-lg shadow-lg w-full">
-    <Label
-      htmlFor="3d-input"
-      className="block text-sm font-medium text-gray-700 mb-1"
-    >
-      ペラペララジオ
-    </Label>
-    <div className="flex space-x-2">
-      <Input
-        id="3d-input"
-        ref={inputRef}
-        type="text"
-        className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
-        placeholder="お題を入力してください..."
-      />
-      <Button
-        disabled={inputValue ? false : true}
-        onClick={handleClick}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+  onInputChange,
+}: InputSectionProps) => {
+  const [composing, setComposing] = React.useState(false);
+
+  const handleInput = (e: any) => {
+    console.log(e);
+    if (composing) {
+      console.log("入力中");
+    } else {
+      console.log("入力確定");
+    }
+  };
+
+  return (
+    <div className="p-4 bg-white bg-opacity-80 rounded-lg shadow-lg w-full">
+      <Label
+        htmlFor="3d-input"
+        className="block text-sm font-medium text-gray-700 mb-1"
       >
-        {loading ? "通信中..." : "送信"}
-      </Button>
-      {isPlay && (
-        <Button className="ml-6" onClick={soundStop}>
-          STOP
+        ペラペララジオ
+      </Label>
+      <div className="flex space-x-2">
+        <Input
+          id="3d-input"
+          value={inputValue}
+          onChange={(event) => onInputChange(event.target.value)} // 変更点
+          onCompositionStart={() => setComposing(true)}
+          onCompositionEnd={() => setComposing(false)}
+          type="text"
+          className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-black"
+          placeholder="お題を入力してください..."
+        />
+        <Button
+          disabled={!inputValue}
+          onClick={handleClick}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          {loading ? "通信中..." : "送信"}
         </Button>
-      )}
+        {isPlay && (
+          <Button className="ml-6" onClick={soundStop}>
+            STOP
+          </Button>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const useFormattedDate = () => {
   const currentDate = new Date();
