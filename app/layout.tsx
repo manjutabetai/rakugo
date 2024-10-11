@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={dotGothic.className}>
-        <section className="w-full h-screen relative bg-black">
+        <section className="w-full h-screen relative bg-white">
           <ClientCanvasWrapper>{children}</ClientCanvasWrapper>
         </section>
       </body>

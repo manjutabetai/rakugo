@@ -7,13 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IsPlayContext } from "./page";
 
-type Props = {
-  title1: string;
-  title2: string;
-  title3: string;
-};
-
-const MessageBoard = ({ title1, title2, title3 }: Props) => {
+const MessageBoard = () => {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [volume, setVolume] = useState(0.05);
@@ -175,18 +169,6 @@ const MessageBoard = ({ title1, title2, title3 }: Props) => {
     <group position={[0, 1, -3]}>
       <Html position={[0, 0.5, 0.02]} transform occlude>
         <div className="w-full p-5 rounded-2xl backdrop-blur-md backdrop-brightness-75 bg-white bg-opacity-10 border border-white border-opacity-30 text-white overflow-hidden">
-          <h1 className="text-sm font-bold mb-2">{formattedDate}</h1>
-          <ScrollingTitle title={title1} onClick={() => {}} />
-          <ScrollingTitle title={title2} onClick={() => {}} />
-          <ScrollingTitle title={title3} onClick={() => {}} />
-          {/* <InputSection
-            inputValue={inputValue}
-            onInputChange={handleInputChange}
-            loading={loading}
-            handleClick={handleClick}
-            isPlay={isPlay}
-            soundStop={soundStop}
-          /> */}
           <Input
             className="text-black"
             onChange={(e) => setInputValue(e.target.value)}
