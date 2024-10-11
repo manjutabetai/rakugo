@@ -3,32 +3,44 @@
 import Loader from "@/components/Loader";
 
 import Blob from "./_blobs/Blob";
-import { Canvas } from "@react-three/fiber";
-import { createContext, Suspense, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { createContext, Suspense, useRef, useState } from "react";
 import InputArea from "./InputArea";
 
 interface IsPlayContextType {
   isPlay: boolean;
   soundUrl: string;
+  // speechSoundRef: Howl | null;
   setIsPlay: (value: boolean) => void;
   setSoundUrl: (value: string) => void;
+  // setSpeechSoundRef: (value: Howl | null) => void;
 }
 
 export const IsPlayContext = createContext<IsPlayContextType>({
   isPlay: false,
   soundUrl: "",
+  // speechSoundRef: null,
   setIsPlay: () => {},
   setSoundUrl: () => {},
+  // setSpeechSoundRef: () => {},
 });
 
 export default function Home() {
   const [isPlay, setIsPlay] = useState(false);
   const [soundUrl, setSoundUrl] = useState("");
+  // const [speechSoundRef, setSpeechSoundRef] = useState<Howl | null>(null);
 
   return (
     <>
       <IsPlayContext.Provider
-        value={{ isPlay, setIsPlay, soundUrl, setSoundUrl }}
+        value={{
+          isPlay,
+          setIsPlay,
+          soundUrl,
+          setSoundUrl,
+          // speechSoundRef,
+          // setSpeechSoundRef,
+        }}
       >
         <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-r from-purple-900 via-pink-800 to-orange-900">
           <div className="px-4">

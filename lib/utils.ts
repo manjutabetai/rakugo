@@ -6,11 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function  playSound(soundUrl: string ,speechSoundRef:any) {
-  console.log(soundUrl)
-  console.log(speechSoundRef);
-  if (soundUrl) {
+  if (soundUrl && speechSoundRef) {
     speechSoundRef.current = new Howl({
       src: [soundUrl],
+      html5: true,
+        format: "mp3",
       onload: () => {
         console.log("音声ファイルが正常にロードされました");
         speechSoundRef.current?.play();

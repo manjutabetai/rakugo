@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IsPlayContext } from "./page";
-import { playSound } from "@/lib/utils";
 
 const InputArea = () => {
   const [response, setResponse] = useState("");
@@ -17,7 +16,6 @@ const InputArea = () => {
     useContext(IsPlayContext);
 
   const backSoundRef = useRef<Howl | null>(null);
-  const speechSoundRef = useRef<Howl | null>(null);
 
   useEffect(() => {
     if (backSoundRef.current) {
@@ -63,7 +61,7 @@ const InputArea = () => {
 
       // ステータスコードをログに出力
       console.log(
-        "Fetch response status: ",
+        "Fetch response status:",
         response.status,
         response.statusText
       );
@@ -85,66 +83,6 @@ const InputArea = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("soundUrl::" + soundUrl);
-    console.log("speeechSoundRef::" + speechSoundRef);
-
-    if (soundUrl && speechSoundRef) {
-      // playSound(soundUrl, speechSoundRef);
-    }
-  }, [soundUrl]);
-
-  const testSpeech = () => {
-    speechSoundRef.current = new Howl({
-      src: [
-        "https://qowgsmftnhetuvgiudox.supabase.co/storage/v1/object/sign/audio-bucket/audio/2024-10-06T20-33-57-350Z?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdWRpby1idWNrZXQvYXVkaW8vMjAyNC0xMC0wNlQyMC0zMy01Ny0zNTBaIiwiaWF0IjoxNzI4MjQ2ODQyLCJleHAiOjE3MjgyNDk4NDJ9.PjJcp3ZP19T0ZQIFrnsunvqYURmidC1-jx1Ecfd6Pw8",
-      ],
-      onload: () => {
-        console.log("音声ファイルが正常にロードされました");
-        speechSoundRef.current?.play();
-      },
-      format: ["mp3"], // 音声ファイルの形式を指定（省略可）
-
-      onloaderror: (id, error) => {
-        console.error("音声のロード中にエラーが発生しました:", error);
-      },
-      onplayerror: (id, error) => {
-        console.error("音声の再生中にエラーが発生しました:", error);
-        // 再度再生を試みる
-        if (speechSoundRef) {
-          speechSoundRef.current?.play();
-        }
-      },
-    });
-  };
-
-  const speech = (filePath: string) => {
-    if (!filePath || typeof filePath !== "string") {
-      console.error("再生するファイルパスが無効です:", filePath);
-      return;
-    }
-    console.log("speech()が受け取ったurl::" + filePath);
-    speechSoundRef.current = new Howl({
-      src: [filePath],
-      onload: () => {
-        console.log("音声ファイルが正常にロードされました");
-        speechSoundRef.current?.play();
-      },
-      onplayerror: (error) => {
-        console.error("音声の再生中にエラーが発生しました:", error);
-        speechSoundRef.current?.play(); // 自動的に再試行
-      },
-      onend: () => {
-        console.log("音声の再生が終了しました");
-        backSoundRef.current?.stop(); // 背景音を停止（必要であれば）
-      },
-      onloaderror: (id, error) => {
-        console.error("音声のロード中にエラーが発生しました:", error);
-      },
-    });
-    // startBack();
-  };
-
   const startBack = () => {
     backSoundRef.current = new Howl({
       src: ["/rakugo/Sunny_Smiles.mp3"],
@@ -159,16 +97,6 @@ const InputArea = () => {
     });
   };
 
-  const soundStop = () => {
-    setIsPlay(false);
-    if (speechSoundRef.current?.playing()) {
-      speechSoundRef.current.stop();
-    }
-
-    if (backSoundRef.current?.playing()) {
-      backSoundRef.current.stop();
-    }
-  };
   const test = () => {
     setSoundUrl("aaa");
   };
@@ -187,11 +115,7 @@ const InputArea = () => {
       >
         {loading ? "通信中..." : "送信"}
       </Button>
-      {isPlay && (
-        <Button className="ml-6" onClick={soundStop}>
-          STOP
-        </Button>
-      )}
+
       <Button className="ml-6" onClick={test}>
         test
       </Button>
