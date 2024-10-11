@@ -1,9 +1,13 @@
 const vertexShader = `
 uniform float u_intensity;
 uniform float u_time;
+uniform float u_isMonochrome; // モノクロフラグ
+
 
 varying vec2 vUv;
 varying float vDisplacement;
+varying float vMonochromeFlag; // フラグをフラグメントシェーダーに渡すための変数
+
 
 // Classic Perlin 3D Noise 
 // by Stefan Gustavson
@@ -93,7 +97,7 @@ float cnoise(vec3 P) {
 
 void main() {
     vUv = uv;
-
+ vMonochromeFlag = u_isMonochrome; // フラグをvaryingで渡す
     vDisplacement = cnoise(position + vec3(2.0 * u_time));
   
     vec3 newPosition = position + normal * (u_intensity * vDisplacement);

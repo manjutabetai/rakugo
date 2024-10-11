@@ -1,25 +1,23 @@
+"use client";
+
 import { useRef, useEffect, useState, useContext } from "react";
-import { Html } from "@react-three/drei";
-import axios from "axios";
 import { Howl } from "howler";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IsPlayContext } from "./page";
+import { playSound } from "@/lib/utils";
 
-const MessageBoard = () => {
+const InputArea = () => {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [volume, setVolume] = useState(0.05);
-  const { isPlay, setIsPlay } = useContext(IsPlayContext);
   const [inputValue, setInputValue] = useState("");
-  const [soundUrl, setSoundUrl] = useState("");
+  const { isPlay, setIsPlay, soundUrl, setSoundUrl } =
+    useContext(IsPlayContext);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const backSoundRef = useRef<Howl | null>(null);
   const speechSoundRef = useRef<Howl | null>(null);
-
-  const formattedDate = useFormattedDate();
 
   useEffect(() => {
     if (backSoundRef.current) {
@@ -80,6 +78,7 @@ const MessageBoard = () => {
       const data = await response.json();
       const filePath = data.url;
       setSoundUrl(filePath);
+      playSound(soundUrl, speechSoundRef);
       // speech(filePath);
     } catch (error) {
       console.error(error);
@@ -162,50 +161,40 @@ const MessageBoard = () => {
       backSoundRef.current.stop();
     }
   };
-  useFrame(() => {
-    // testSpeech();
-  });
   return (
-    <group position={[0, 1, -3]}>
-      <Html position={[0, 0.5, 0.02]} transform occlude>
-        <div className="w-full p-5 rounded-2xl backdrop-blur-md backdrop-brightness-75 bg-white bg-opacity-10 border border-white border-opacity-30 text-white overflow-hidden">
-          <Input
-            className="text-black"
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-          <Button
-            disabled={!inputValue}
-            onClick={startDify}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            {loading ? "通信中..." : "送信"}
-          </Button>
-          {isPlay && (
-            <Button className="ml-6" onClick={soundStop}>
-              STOP
-            </Button>
-          )}
-          {soundUrl && (
-            <div>
-              <audio controls src={soundUrl}></audio>
-            </div>
-          )}
+    <div className="w-full max-w-md p-8 rounded-xl mb-10 bg-black bg-opacity-50 backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
+      <Textarea
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="未来へのメッセージを入力してください..."
+        className="w-full h-32 mb-4 bg-transparent text-pink-300 placeholder-pink-500 border-2 border-pink-500 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 ease-in-out resize-none"
+        maxLength={200}
+      />
+      <Button
+        disabled={!inputValue}
+        onClick={startDify}
+        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        {loading ? "通信中..." : "送信"}
+      </Button>
+      {isPlay && (
+        <Button className="ml-6" onClick={soundStop}>
+          STOP
+        </Button>
+      )}
 
-          <div>
-            <label htmlFor="volume">BGM:</label>
-            <input
-              type="range"
-              id="volume"
-              min="0"
-              max=".2"
-              step="0.05"
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-            />
-          </div>
-        </div>
-      </Html>
-    </group>
+      <div>
+        <label htmlFor="volume">BGM:</label>
+        <input
+          type="range"
+          id="volume"
+          min="0"
+          max=".2"
+          step="0.05"
+          value={volume}
+          onChange={(e) => setVolume(parseFloat(e.target.value))}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -249,6 +238,7 @@ const ScrollingTitle = ({
 };
 import React, { useCallback } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Textarea } from "@/components/ui/textarea";
 
 interface InputSectionProps {
   inputValue: string;
@@ -322,4 +312,4 @@ const useFormattedDate = () => {
   return `${year}/${month}/${day}`;
 };
 
-export default MessageBoard;
+export default InputArea;

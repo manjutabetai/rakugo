@@ -4,16 +4,19 @@ import fragmentShader from "./fragmentShader";
 import { useFrame } from "@react-three/fiber";
 import { MathUtils } from "three";
 import { IsPlayContext } from "../page";
+import * as THREE from "three";
 
 const Blob = () => {
   const mesh = useRef<any>();
   const hover = useRef(false);
-  const { isPlay, setIsPlay } = useContext(IsPlayContext); // アニメーション再生状態
+  const { isPlay, setIsPlay, soundUrl, setSoundUrl } =
+    useContext(IsPlayContext); // アニメーション再生状態
 
   const uniforms = useMemo(() => {
     return {
       u_time: { value: 0 }, // 経過時間
       u_intensity: { value: 0.3 }, //hover: 膨らみ
+      u_isMonochrome: { value: soundUrl === "" ? 1 : 0 }, // モノクロフラグ (1: モノクロ, 0: 通常)
     };
   }, []);
 
@@ -41,8 +44,8 @@ const Blob = () => {
   return (
     <mesh
       ref={mesh}
-      scale={0.5}
-      position={[0, 0, 0]}
+      scale={2}
+      position={[0, 1, 1]}
       onPointerOver={() => (hover.current = true)}
       onPointerOut={() => (hover.current = false)}
       onClick={handleClick} // クリックイベントに handleClick を設定
@@ -52,7 +55,10 @@ const Blob = () => {
       <shaderMaterial
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        uniforms={uniforms}
+        uniforms={
+          uniforms
+          // soundUrlが空の場合はモノクロ
+        }
       />
     </mesh>
   );

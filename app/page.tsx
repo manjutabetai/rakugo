@@ -1,49 +1,59 @@
 "use client";
 
-import { createContext, Suspense, useEffect, useRef, useState } from "react";
-import { OrbitControls } from "@react-three/drei";
-
 import Loader from "@/components/Loader";
-import MessageBoard from "./MessageBord";
 
 import Blob from "./_blobs/Blob";
+import { Canvas } from "@react-three/fiber";
+import { createContext, Suspense, useState } from "react";
+import InputArea from "./InputArea";
 
 interface IsPlayContextType {
   isPlay: boolean;
+  soundUrl: string;
   setIsPlay: (value: boolean) => void;
+  setSoundUrl: (value: string) => void;
 }
 
 export const IsPlayContext = createContext<IsPlayContextType>({
   isPlay: false,
+  soundUrl: "",
   setIsPlay: () => {},
+  setSoundUrl: () => {},
 });
+
 export default function Home() {
   const [isPlay, setIsPlay] = useState(false);
-
-  const value = { isPlay, setIsPlay };
+  const [soundUrl, setSoundUrl] = useState("");
 
   return (
-    <IsPlayContext.Provider value={{ isPlay, setIsPlay }}>
-      <Suspense fallback={<Loader />}>
-        {/* <OrbitControls /> */}
-        <directionalLight position={[1, 1, 1]} intensity={2} castShadow />
-        <ambientLight intensity={0.5} />
-        {/* <gridHelper args={[20, 20, 0xff0000, "teal"]} /> */}
+    <>
+      <IsPlayContext.Provider
+        value={{ isPlay, setIsPlay, soundUrl, setSoundUrl }}
+      >
+        <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-r from-purple-900 via-pink-800 to-orange-900">
+          <div className="px-4">
+            <Canvas
+              camera={{
+                position: [0, 0, 10],
+                fov: 75,
+              }}
+            >
+              <Suspense fallback={<Loader />}>
+                {/* <OrbitControls /> */}
+                <directionalLight
+                  position={[1, 1, 1]}
+                  intensity={2}
+                  castShadow
+                />
+                <ambientLight intensity={0.5} />
+                <Blob />
+              </Suspense>
+            </Canvas>
+          </div>
 
-        {/* <Room /> */}
-        {/* <group position={[2.8, 0, -2.5]} ref={radioRef}> */}
-        {/* <Radio /> */}
-        {/* <WavingNote cameraRef={cameraRef} /> */}
-        {/* </group> */}
-        <Blob />
-
-        {/* <MessageBoard /> */}
-
-        {/* <mesh receiveShadow rotation-x={Math.PI * 0.5} position-y={0}>
-            <planeGeometry args={[10, 10]} />
-            <meshStandardMaterial color="gray" side={THREE.DoubleSide} />
-          </mesh> */}
-      </Suspense>
-    </IsPlayContext.Provider>
+          <InputArea />
+        </div>
+      </IsPlayContext.Provider>
+    </>
   );
 }

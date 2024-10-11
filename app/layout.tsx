@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
-import ClientCanvasWrapper from "./ClinentCanvasWrapper";
 
 const dotGothic = localFont({
   src: "./fonts/DotGothic16-Regular.ttf",
@@ -20,12 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={dotGothic.className}>
-        <section className="w-full h-screen relative bg-white">
-          <ClientCanvasWrapper>{children}</ClientCanvasWrapper>
-        </section>
-      </body>
+    <html lang="ja">
+      <body className={dotGothic.className}>{children}</body>
     </html>
   );
 }
