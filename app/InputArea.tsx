@@ -78,13 +78,21 @@ const InputArea = () => {
       const data = await response.json();
       const filePath = data.url;
       setSoundUrl(filePath);
-      playSound(soundUrl, speechSoundRef);
       // speech(filePath);
     } catch (error) {
       console.error(error);
       setResponse("エラーが発生しました");
     }
   };
+
+  useEffect(() => {
+    console.log("soundUrl::" + soundUrl);
+    console.log("speeechSoundRef::" + speechSoundRef);
+
+    if (soundUrl && speechSoundRef) {
+      // playSound(soundUrl, speechSoundRef);
+    }
+  }, [soundUrl]);
 
   const testSpeech = () => {
     speechSoundRef.current = new Howl({
@@ -161,11 +169,14 @@ const InputArea = () => {
       backSoundRef.current.stop();
     }
   };
+  const test = () => {
+    setSoundUrl("aaa");
+  };
   return (
     <div className="w-full max-w-md p-8 rounded-xl mb-10 bg-black bg-opacity-50 backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
       <Textarea
         onChange={(e) => setInputValue(e.target.value)}
-        placeholder="未来へのメッセージを入力してください..."
+        placeholder="あなたの失敗を教えてください。"
         className="w-full h-32 mb-4 bg-transparent text-pink-300 placeholder-pink-500 border-2 border-pink-500 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 ease-in-out resize-none"
         maxLength={200}
       />
@@ -181,6 +192,9 @@ const InputArea = () => {
           STOP
         </Button>
       )}
+      <Button className="ml-6" onClick={test}>
+        test
+      </Button>
 
       <div>
         <label htmlFor="volume">BGM:</label>

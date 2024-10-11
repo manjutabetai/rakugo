@@ -13,12 +13,13 @@ const Blob = () => {
     useContext(IsPlayContext); // アニメーション再生状態
 
   const uniforms = useMemo(() => {
+    console.log("blob ; " + soundUrl);
     return {
       u_time: { value: 0 }, // 経過時間
       u_intensity: { value: 0.3 }, //hover: 膨らみ
       u_isMonochrome: { value: soundUrl === "" ? 1 : 0 }, // モノクロフラグ (1: モノクロ, 0: 通常)
     };
-  }, []);
+  }, [soundUrl]);
 
   useFrame((state) => {
     // const tes = useContext(MyContext);
@@ -53,6 +54,7 @@ const Blob = () => {
       {/* 20面体 */}
       <icosahedronGeometry args={[2, 20]} />
       <shaderMaterial
+        key={soundUrl}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={
