@@ -101,37 +101,24 @@ const InputArea = () => {
     setSoundUrl("aaa");
   };
   return (
-    <div className="w-full max-w-md p-8 rounded-xl mb-10 bg-black bg-opacity-50 backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
+    <div className="flex flex-col justify-end w-full p-12 ml-4 rounded-xl my-auto backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
       <Textarea
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="あなたの失敗を教えてください。"
-        className="w-full h-32 mb-4 bg-transparent text-pink-300 placeholder-pink-500 border-2 border-pink-500 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 ease-in-out resize-none"
+        className="w-full h-32 mb-4 bg-transparent text-pink-300  border-2  rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 ease-in-out resize-none"
         maxLength={200}
       />
       <Button
         disabled={!inputValue}
         onClick={startDify}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="px-4 py-2 bg-[#f83331] text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         {isLoading ? "通信中..." : "送信"}
       </Button>
 
-      <Button className="ml-6" onClick={test}>
+      {/* <Button className="ml-6" onClick={test}>
         test
-      </Button>
-
-      <div>
-        <label htmlFor="volume">BGM:</label>
-        <input
-          type="range"
-          id="volume"
-          min="0"
-          max=".2"
-          step="0.05"
-          value={volume}
-          onChange={(e) => setVolume(parseFloat(e.target.value))}
-        />
-      </div>
+      </Button> */}
     </div>
   );
 };

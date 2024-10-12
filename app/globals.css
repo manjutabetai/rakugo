@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: #f2ebdf;
+  color: black;
+  line-height: 120%;
+  min-height: 100%;
+
+}
+  
 
 /* カラー　
 

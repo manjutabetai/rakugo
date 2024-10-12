@@ -2,19 +2,21 @@ import React from "react";
 
 const Header = () => {
   return (
-    <header className="flex justify-between items-center p-4">
-      <img src="/logo.png" alt="Logo" className="h-20" /> {/* ロゴイメージ */}
-      <nav className="flex space-x-4">
-        <a href="#about" className="text-black font-bold">
-          about
-        </a>
-        <a href="#info" className="text-black font-bold">
-          info
-        </a>
-        <a href="#generate" className="text-black font-bold">
-          generate
-        </a>
-      </nav>
+    <header className="relative items-center px-12 py-8">
+      <div className="flex justify-between items-center max-w-screen-lg mx-auto">
+        <img src="/logo.png" alt="Logo" className="h-20" /> {/* ロゴイメージ */}
+        <nav className="flex gap-8 justify-start ">
+          <a href="#about" className=" font-bold">
+            about
+          </a>
+          <a href="#info" className=" font-bold">
+            info
+          </a>
+          <a href="#generate" className=" font-bold">
+            generate
+          </a>
+        </nav>
+      </div>
     </header>
   );
 };

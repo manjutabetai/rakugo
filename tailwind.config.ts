@@ -9,18 +9,11 @@ const config: Config = {
   ],
   theme: {
   	extend: {
-			keyframes: {
-        // 右から左へスクロールするアニメーション
-        scroll: {
-          "0%": { transform: "translateX(10%)" },
-          "100%": { transform: "translateX(-100%)" },
-        },
-      },
-      animation: {
-        // 無限スクロールアニメーションを設定
-        scroll: "scroll var(--animation-duration, 20s) linear infinite",
-      },
+			
   		colors: {
+				 customYellow: '#ffd258',
+				 customRed:'#f83331',
+				 customWhite:'#f2ebdf',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
