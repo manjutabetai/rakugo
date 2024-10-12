@@ -20,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={dotGothic.className}>{children}</body>
+      <body className={`bg-[#f2ebdf] p-12 ${dotGothic.className}`}>
+        {children}
+      </body>
     </html>
   );
 }

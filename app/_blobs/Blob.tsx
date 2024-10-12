@@ -4,14 +4,11 @@ import fragmentShader from "./fragmentShader";
 import { useFrame } from "@react-three/fiber";
 import { MathUtils } from "three";
 import { IsPlayContext } from "../page";
-import * as THREE from "three";
-import { playSound } from "@/lib/utils";
-import { makeParseableResponseFormat } from "openai/lib/parser.mjs";
 
 const Blob = () => {
   const mesh = useRef<any>();
   const hover = useRef(false);
-  const { isPlay, setIsPlay, soundUrl } = useContext(IsPlayContext); // アニメーション再生状態
+  const { isPlay, setIsPlay, soundUrl, isLoading } = useContext(IsPlayContext); // アニメーション再生状態
 
   const uniforms = useMemo(() => {
     console.log("blob ; " + soundUrl);
@@ -23,10 +20,9 @@ const Blob = () => {
   }, [soundUrl]);
 
   useFrame((state) => {
-    // const tes = useContext(MyContext);
-    // console.log("usecontext: ");
-    // console.log(tes);
     const { clock } = state;
+
+    // 再生中アニメーション
     if (mesh.current && isPlay) {
       // isPlaying が true の場合のみアニメーション実行 ,スピードを設定
       mesh.current.material.uniforms.u_time.value = 1 * clock.getElapsedTime();
@@ -36,6 +32,17 @@ const Blob = () => {
         hover.current ? 1 : 0.15,
         0.02
       );
+    }
+    // isLoading が true の場合、スケールアップ＆回転
+    if (mesh.current && isLoading) {
+      // スケールを大きく
+      mesh.current.scale.set(1, 1, 1); // スケールを大きく設定
+
+      // z 軸で回転し続ける
+      mesh.current.rotation.z += 0.05; // 回転スピードを設定
+    } else if (mesh.current) {
+      // isLoading が false の場合、スケールを元に戻す
+      mesh.current.scale.set(1, 1, 1); // 元のスケールに戻す
     }
   });
   const [speechSoundRef, setSpeechSoundRef] = useState<Howl | null>(null);
@@ -86,8 +93,8 @@ const Blob = () => {
   return (
     <mesh
       ref={mesh}
-      scale={2}
-      position={[0, 1, 1]}
+      scale={0.1}
+      position={[0, 0, 0]}
       onPointerOver={() => (hover.current = true)}
       onPointerOut={() => (hover.current = false)}
       onClick={handleClick} // クリックイベントに handleClick を設定
