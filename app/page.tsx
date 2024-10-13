@@ -7,6 +7,7 @@ import InputArea from "./InputArea";
 import ColorfulSpinner from "@/components/Loading";
 import Header from "@/components/Header";
 import { Card } from "@/components/ui/card";
+import PostFeed from "@/components/PostFeed";
 
 interface IsPlayContextType {
   isPlay: boolean;
@@ -70,95 +71,54 @@ export default function Home() {
               </div>
             </div>
           </section>
+          <PostFeed />
 
           {/* {isLoading ? <></> : <InputArea />} */}
-
-          {/* 下部 */}
-          <section
-            className="py-20 px-32 bg-customYellow"
-            // style={{ backgroundColor: "#ffd258" }}
-          >
-            <div className="flex flex-col justify-start mx-auto gap-1  items-center text-center px-40 mb-20">
-              <h1 className="text-3xl mb-4 mx-auto leading-tight font-bold">
-                「AIの応援、届いてます！」
-                <br />
-                悩みに対する音声アドバイス公開中
-              </h1>
-
-              <p className="leading-relaxed font-bold ">
-                どんな悩みも一人じゃない。
-              </p>
-              <p className="leading-relaxed font-bold mt-0">
-                AIがあなたの声を聴き、元気が出るアドバイスを音声でお届けします。公開されたアドバイスを聴いて、少しでも心が軽くなる瞬間を見つけてください。
-              </p>
-            </div>
-            <div className="grid  gap-10 sm:grid-cols-1 lg:grid-cols-4 ">
-              {posts.map((post) => (
-                <Card
-                  key={post.id}
-                  className=" bg-white overflow-hidden shadow-lg shadow-black border-2 border-black mb-4"
-                  style={{ borderRadius: "25px" }}
-                >
-                  <div className="h-[150px] overflow-hidden ">
-                    <img
-                      src="/bird.jpg"
-                      alt={`Post ${post.id} image`}
-                      className="w-full h-full object-cover border-b-2 border-black"
-                    />
-                  </div>
-                  <div className="p-8 h-[200px] overflow-y-auto bg-customWhite">
-                    <h2 className="mb-4 font-extrabold">タイトル: ○○○</h2>
-                    <p className=" text-sm">{post.content}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </section>
         </Suspense>
       </IsPlayContext.Provider>
     </>
   );
 }
 
-const posts = [
-  {
-    id: 1,
-    image: "https://via.placeholder.com/200x150.png?text=Post+1",
-    content: "これは投稿1の内容です。",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/200x150.png?text=Post+2",
-    content: "これは投稿2の内容です。",
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/200x150.png?text=Post+3",
-    content: "これは投稿3の内容です。",
-  },
-  {
-    id: 4,
-    image: "https://via.placeholder.com/200x150.png?text=Post+4",
-    content: "これは投稿4の内容です。",
-  },
-  {
-    id: 5,
-    image: "https://via.placeholder.com/200x150.png?text=Post+5",
-    content: "これは投稿5の内容です。",
-  },
-  {
-    id: 6,
-    image: "https://via.placeholder.com/200x150.png?text=Post+6",
-    content: "これは投稿6の内容です。",
-  },
-  {
-    id: 7,
-    image: "https://via.placeholder.com/200x150.png?text=Post+7",
-    content: "これは投稿7の内容です。",
-  },
-  {
-    id: 8,
-    image: "https://via.placeholder.com/200x150.png?text=Post+8",
-    content: "これは投稿8の内容です。",
-  },
-];
+// const posts = [
+//   {
+//     id: 1,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+1",
+//     content: "これは投稿1の内容です。",
+//   },
+//   {
+//     id: 2,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+2",
+//     content: "これは投稿2の内容です。",
+//   },
+//   {
+//     id: 3,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+3",
+//     content: "これは投稿3の内容です。",
+//   },
+//   {
+//     id: 4,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+4",
+//     content: "これは投稿4の内容です。",
+//   },
+//   {
+//     id: 5,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+5",
+//     content: "これは投稿5の内容です。",
+//   },
+//   {
+//     id: 6,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+6",
+//     content: "これは投稿6の内容です。",
+//   },
+//   {
+//     id: 7,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+7",
+//     content: "これは投稿7の内容です。",
+//   },
+//   {
+//     id: 8,
+//     image: "https://via.placeholder.com/200x150.png?text=Post+8",
+//     content: "これは投稿8の内容です。",
+//   },
+// ];

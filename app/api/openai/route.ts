@@ -60,6 +60,21 @@ export async function POST(req: Request) {
       throw new Error(`Supabase 公開 URL の取得に失敗: ${publicUrlError.message}`);
     }
 
+    // Supabase データベースにテキストデータ（プロンプト）を保存
+    const { data: insertData, error: insertError } = await supabase
+      .from("audio_data") // テーブル名を指定
+      .insert({
+        audio_url: publicUrlData.signedUrl, // 音声ファイルの公開 URL
+        prompt: prompt.result, // プロンプトのテキスト
+        inputValue:inputValue
+      });
+
+    if (insertError) {
+      throw new Error(`Supabase データベースへの挿入エラー: ${insertError.message}`);
+    }
+
+    console.log("テキストデータが Supabase データベースに保存されました: ", insertData);
+
 
     // 成功した場合、生成したファイルの公開 URL を返す
     return NextResponse.json(

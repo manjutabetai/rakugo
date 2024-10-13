@@ -10,11 +10,13 @@ import Blob from "./_blobs/Blob";
 import VoicePlayer from "@/components/VoicePlayer";
 
 import { OrbitControls } from "@react-three/drei";
+import { Input } from "@/components/ui/input";
 
 const InputArea = () => {
   const [response, setResponse] = useState("");
   const [volume, setVolume] = useState(0.05);
   const [inputValue, setInputValue] = useState("");
+  const [name, setName] = useState("");
 
   const { isPlay, setIsPlay, soundUrl, setSoundUrl, isLoading, setIsLoading } =
     useContext(IsPlayContext);
@@ -29,7 +31,17 @@ const InputArea = () => {
 
   const startDify = async () => {
     setIsLoading(true);
-    console.log("input value: " + inputValue);
+    console.log("name: " + name);
+    let finalInputValue = inputValue;
+    // ニックネームがある場合は名前を追加する
+    if (name) {
+      console.log("true");
+      finalInputValue = `"投稿者の名前は「${name}」さんです。"` + inputValue;
+    } else {
+      finalInputValue = `"投稿者の名前は「匿名ちゃん」さんです。"` + inputValue;
+    }
+
+    console.log("input value: " + finalInputValue);
 
     setResponse("");
 
@@ -38,11 +50,11 @@ const InputArea = () => {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: inputValue }),
+        body: JSON.stringify({ prompt: finalInputValue }),
       });
       const difyData = await difyRes.json();
       if (difyData.result !== "No result found") {
-        await getGpt(difyData, inputValue);
+        await getGpt(difyData, finalInputValue);
       } else {
         alert("ニュース原稿の取得に失敗しました。もう一度お願いします。");
       }
@@ -89,33 +101,23 @@ const InputArea = () => {
     }
   };
 
-  const startBack = () => {
-    backSoundRef.current = new Howl({
-      src: ["/rakugo/Sunny_Smiles.mp3"],
-      // src: ["/rakugo/保護犬_2024-10-05T20-51-25-971Z.mp3"],
-      onload: () => {
-        backSoundRef.current?.play();
-        setIsPlay(true);
-      },
-      onend: () => setIsPlay(false),
-      volume: volume,
-      loop: true,
-    });
-  };
-
-  const test = () => {
-    setSoundUrl("aaa");
-  };
   return (
     <div className="flex h-[300px] flex-col justify-end w-full px-12 pb-4 ml-4 rounded-xl backdrop-blur-xl shadow-2xl">
       <div>
         {!isLoading && !soundUrl && (
-          <Textarea
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="相談したいことを入力してください。"
-            className="w-full h-32 mb-4 bg-customWhite border-gray-500"
-            maxLength={200}
-          />
+          <>
+            <Input
+              onChange={(e) => setName(e.target.value)}
+              placeholder="ニックネームを入力してください"
+              className="w-full h-12 mb-4 bg-customWhite border-gray-500"
+            />
+            <Textarea
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="相談や失敗などをボヤいてみましょう"
+              className="w-full h-32 mb-4 bg-customWhite border-gray-500"
+              maxLength={200}
+            />
+          </>
         )}
         {isLoading && (
           <div id="loader" className=" relative h-full ">

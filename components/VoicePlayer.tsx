@@ -1,6 +1,7 @@
 import { Play, Pause, Trash } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { IsPlayContext } from "@/app/page";
+import { Howl, Howler } from "howler";
 
 const VoicePlayer = () => {
   const { isPlay, setIsPlay, soundUrl, setSoundUrl } =
