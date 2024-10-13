@@ -45,58 +45,14 @@ const Blob = () => {
       mesh.current.scale.set(1, 1, 1); // 元のスケールに戻す
     }
   });
-  const [speechSoundRef, setSpeechSoundRef] = useState<Howl | null>(null);
-  useEffect(() => {
-    console.log("soundUrl::" + soundUrl);
-    console.log("speechSoundRef::" + speechSoundRef);
-
-    if (soundUrl) {
-      const newSound = new Howl({
-        src: [soundUrl],
-        html5: true,
-        format: "mp3",
-        onload: () => {
-          console.log("音声ファイルが正常にロードされました");
-          // newSound.play(); //自動プレイ
-        },
-        onloaderror: (id, error) => {
-          console.error("音声のロード中にエラーが発生しました:", error);
-        },
-        onplayerror: (id, error) => {
-          console.error("音声の再生中にエラーが発生しました:", error);
-          newSound.play(); // 自動的に再試行
-        },
-        onend: () => {
-          console.log("音声の再生が終了しました");
-          setIsPlay(false);
-        },
-      });
-      setSpeechSoundRef(newSound);
-    }
-  }, [soundUrl]);
-
-  const handleClick = () => {
-    if (soundUrl && speechSoundRef) {
-      if (speechSoundRef.playing()) {
-        speechSoundRef.pause();
-        setIsPlay(false);
-      } else {
-        speechSoundRef.play();
-        setIsPlay(true);
-      }
-    } else {
-      console.error("Howlでエラーが出ました");
-    }
-  };
 
   return (
     <mesh
       ref={mesh}
-      scale={0.1}
+      scale={1}
       position={[0, 0, 0]}
       onPointerOver={() => (hover.current = true)}
       onPointerOut={() => (hover.current = false)}
-      onClick={handleClick} // クリックイベントに handleClick を設定
     >
       {/* 20面体 */}
       <icosahedronGeometry args={[2, 20]} />
@@ -104,10 +60,7 @@ const Blob = () => {
         key={soundUrl}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        uniforms={
-          uniforms
-          // soundUrlが空の場合はモノクロ
-        }
+        uniforms={uniforms}
       />
     </mesh>
   );

@@ -9,6 +9,8 @@ import { Canvas } from "@react-three/fiber";
 import Blob from "./_blobs/Blob";
 import VoicePlayer from "@/components/VoicePlayer";
 
+import { OrbitControls } from "@react-three/drei";
+
 const InputArea = () => {
   const [response, setResponse] = useState("");
   const [volume, setVolume] = useState(0.05);
@@ -110,12 +112,11 @@ const InputArea = () => {
         {!isLoading && !soundUrl && (
           <Textarea
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="あなたの失敗を教えてください。"
+            placeholder="相談したいことを入力してください。"
             className="w-full h-32 mb-4 bg-customWhite border-gray-500"
             maxLength={200}
           />
         )}
-
         {isLoading && (
           <div id="loader" className=" relative h-full ">
             <div id="box"></div>
@@ -126,12 +127,13 @@ const InputArea = () => {
         {soundUrl && (
           <>
             <Canvas
-              className="h-full"
+              className="hover:cursor-pointer"
               camera={{
-                position: [0, 0, 3],
+                position: [0, 0, 4],
                 fov: 75,
               }}
             >
+              <OrbitControls />
               <directionalLight position={[1, 1, 1]} intensity={2} castShadow />
               <ambientLight intensity={0.5} />
               <Blob />

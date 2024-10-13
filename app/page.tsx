@@ -4,18 +4,14 @@ import Blob from "./_blobs/Blob";
 import { Canvas } from "@react-three/fiber";
 import { createContext, Suspense, useState } from "react";
 import InputArea from "./InputArea";
-import Loading from "@/components/Loading";
 import ColorfulSpinner from "@/components/Loading";
 import Header from "@/components/Header";
 import { Card } from "@/components/ui/card";
-import { Play } from "lucide-react";
-import VoicePlayer from "@/components/VoicePlayer";
 
 interface IsPlayContextType {
   isPlay: boolean;
   soundUrl: string;
   isLoading: boolean;
-  // speechSoundRef: Howl | null;
   setIsPlay: (value: boolean) => void;
   setIsLoading: (value: boolean) => void;
   setSoundUrl: (value: string) => void;
@@ -25,7 +21,6 @@ export const IsPlayContext = createContext<IsPlayContextType>({
   isPlay: false,
   isLoading: false,
   soundUrl: "",
-  // speechSoundRef: null,
   setIsPlay: () => {},
   setSoundUrl: () => {},
   setIsLoading: () => {},
@@ -35,7 +30,6 @@ export default function Home() {
   const [isPlay, setIsPlay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [soundUrl, setSoundUrl] = useState("");
-  // const [speechSoundRef, setSpeechSoundRef] = useState<Howl | null>(null);
 
   return (
     <>

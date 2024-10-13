@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const response = await axios.post(
       "https://api.dify.ai/v1/workflows/run",
       {
-        inputs: { 'query': prompt },
+        inputs: { 'input': prompt },
         response_mode: "blocking",
         user: "radio-app", // ユーザーIDを指定（任意の文字列でOK）
       },
@@ -23,9 +23,11 @@ export async function POST(request: NextRequest) {
         },
       }
     );  
+    console.log(request)
 
     // Dify APIからのレスポンスを返す
     const result = response.data.data.outputs.text || "No result found";
+
     return NextResponse.json({ result });
   } catch (error) {
     console.error("Error calling Dify API:", error);

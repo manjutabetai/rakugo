@@ -1,20 +1,56 @@
 import { Play, Pause, Trash } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IsPlayContext } from "@/app/page";
 
 const VoicePlayer = () => {
-  const { isPlay, setIsPlay, soundUrl, setSoundUrl, isLoading, setIsLoading } =
+  const { isPlay, setIsPlay, soundUrl, setSoundUrl } =
     useContext(IsPlayContext);
-
-  // 再生・一時停止の切り替え
-  const togglePlay = () => {
-    setIsPlay(!isPlay);
-  };
+  const [speechSoundRef, setSpeechSoundRef] = useState<Howl | null>(null);
 
   // 音声ファイルの削除
   const handleDelete = () => {
     console.log("音声ファイルが削除されました");
     setSoundUrl(""); // soundUrlを空にする
+  };
+
+  useEffect(() => {
+    if (soundUrl) {
+      const newSound = new Howl({
+        src: [soundUrl],
+        html5: true,
+        format: "mp3",
+        onload: () => {
+          console.log("音声ファイルが正常にロードされました");
+          // newSound.play(); //自動プレイ
+        },
+        onloaderror: (id, error) => {
+          console.error("音声のロード中にエラーが発生しました:", error);
+        },
+        onplayerror: (id, error) => {
+          console.error("音声の再生中にエラーが発生しました:", error);
+          newSound.play(); // 自動的に再試行
+        },
+        onend: () => {
+          console.log("音声の再生が終了しました");
+          setIsPlay(false);
+        },
+      });
+      setSpeechSoundRef(newSound);
+    }
+  }, [soundUrl]);
+
+  const handleClick = () => {
+    if (soundUrl && speechSoundRef) {
+      if (speechSoundRef.playing()) {
+        speechSoundRef.pause();
+        setIsPlay(false);
+      } else {
+        speechSoundRef.play();
+        setIsPlay(true);
+      }
+    } else {
+      console.error("Howlでエラーが出ました");
+    }
   };
 
   return (
@@ -26,8 +62,8 @@ const VoicePlayer = () => {
     >
       {/* 再生・一時停止ボタン */}
       <button
-        onClick={togglePlay}
-        className="button p-2 rounded-full hover:shadow-inset transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-customRed"
+        onClick={handleClick}
+        className="button p-2 rounded-full hover:shadow-inset transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-customYellow"
         aria-label={isPlay ? "一時停止" : "再生"}
       >
         {isPlay ? (
