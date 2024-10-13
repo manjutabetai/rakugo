@@ -76,7 +76,6 @@ const Blob = () => {
   }, [soundUrl]);
 
   const handleClick = () => {
-    console.log(speechSoundRef?.playing());
     if (soundUrl && speechSoundRef) {
       if (speechSoundRef.playing()) {
         speechSoundRef.pause();

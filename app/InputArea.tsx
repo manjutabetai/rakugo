@@ -105,7 +105,7 @@ const InputArea = () => {
     setSoundUrl("aaa");
   };
   return (
-    <div className="flex h-[300px] flex-col justify-end w-full p-12 ml-4 rounded-xl my-1 backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
+    <div className="flex h-[300px] flex-col justify-end w-full px-12 pb-4 ml-4 rounded-xl backdrop-blur-xl shadow-2xl">
       <div>
         {!isLoading && !soundUrl && (
           <Textarea

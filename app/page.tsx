@@ -84,15 +84,18 @@ export default function Home() {
             className="py-20 px-32 bg-customYellow"
             // style={{ backgroundColor: "#ffd258" }}
           >
-            <div className="flex flex-col justify-start mx-auto gap-4  items-center text-center px-40 mb-20">
+            <div className="flex flex-col justify-start mx-auto gap-1  items-center text-center px-40 mb-20">
               <h1 className="text-3xl mb-4 mx-auto leading-tight font-bold">
                 「AIの応援、届いてます！」
                 <br />
-                —悩みに対する音声アドバイス公開中
+                悩みに対する音声アドバイス公開中
               </h1>
 
               <p className="leading-relaxed font-bold ">
-                「どんな悩みも、一人じゃない。AIがあなたの声を聴き、元気が出るアドバイスを音声でお届けします。公開されたアドバイスを聴いて、少しでも心が軽くなる瞬間を見つけてください。」
+                どんな悩みも一人じゃない。
+              </p>
+              <p className="leading-relaxed font-bold mt-0">
+                AIがあなたの声を聴き、元気が出るアドバイスを音声でお届けします。公開されたアドバイスを聴いて、少しでも心が軽くなる瞬間を見つけてください。
               </p>
             </div>
             <div className="grid  gap-10 sm:grid-cols-1 lg:grid-cols-4 ">
