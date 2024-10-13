@@ -92,7 +92,7 @@ export default function Home() {
 
           {/* 下部 */}
           <section
-            className="py-20 bg-customYellow"
+            className="py-20 px-32 bg-customYellow"
             // style={{ backgroundColor: "#ffd258" }}
           >
             <div className="flex flex-col justify-start mx-auto gap-4  items-center text-center px-40 mb-20">
@@ -106,22 +106,23 @@ export default function Home() {
                 「どんな悩みも、一人じゃない。AIがあなたの声を聴き、元気が出るアドバイスを音声でお届けします。公開されたアドバイスを聴いて、少しでも心が軽くなる瞬間を見つけてください。」
               </p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid  gap-10 sm:grid-cols-1 lg:grid-cols-4 ">
               {posts.map((post) => (
                 <Card
                   key={post.id}
-                  className="w-[200px] h-[300px] bg-[#ffd43b] bg-opacity-80 rounded-lg overflow-hidden shadow-lg shadow-gray-400"
+                  className=" bg-white overflow-hidden shadow-lg shadow-black border-2 border-black mb-4"
+                  style={{ borderRadius: "25px" }}
                 >
-                  <div className="h-[150px] overflow-hidden">
+                  <div className="h-[150px] overflow-hidden ">
                     <img
                       src="/bird.jpg"
                       alt={`Post ${post.id} image`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover border-b-2 border-black"
                     />
                   </div>
-                  <div className="p-4 h-[150px] overflow-y-auto">
-                    <p className="text-[#212529] text-sm">{post.content}</p>
+                  <div className="p-8 h-[200px] overflow-y-auto bg-customWhite">
+                    <h2 className="mb-4 font-extrabold">タイトル: ○○○</h2>
+                    <p className=" text-sm">{post.content}</p>
                   </div>
                 </Card>
               ))}
