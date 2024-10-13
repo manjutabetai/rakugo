@@ -5,11 +5,15 @@ import { Howl } from "howler";
 import { Button } from "@/components/ui/button";
 import { IsPlayContext } from "./page";
 import { Textarea } from "@/components/ui/textarea";
+import { Canvas } from "@react-three/fiber";
+import Blob from "./_blobs/Blob";
+import VoicePlayer from "@/components/VoicePlayer";
 
 const InputArea = () => {
   const [response, setResponse] = useState("");
   const [volume, setVolume] = useState(0.05);
   const [inputValue, setInputValue] = useState("");
+
   const { isPlay, setIsPlay, soundUrl, setSoundUrl, isLoading, setIsLoading } =
     useContext(IsPlayContext);
 
@@ -101,20 +105,50 @@ const InputArea = () => {
     setSoundUrl("aaa");
   };
   return (
-    <div className="flex flex-col justify-end w-full p-12 ml-4 rounded-xl my-auto backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
-      <Textarea
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="あなたの失敗を教えてください。"
-        className="w-full h-32 mb-4 bg-transparent text-pink-300  border-2  rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-300 ease-in-out resize-none"
-        maxLength={200}
-      />
-      <Button
-        disabled={!inputValue}
-        onClick={startDify}
-        className="px-4 py-2 bg-[#f83331] text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        {isLoading ? "通信中..." : "送信"}
-      </Button>
+    <div className="flex h-[300px] flex-col justify-end w-full p-12 ml-4 rounded-xl my-1 backdrop-blur-xl shadow-2xl border border-opacity-30 border-pink-300 animate-pulse-slow">
+      <div>
+        {!isLoading && !soundUrl && (
+          <Textarea
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="あなたの失敗を教えてください。"
+            className="w-full h-32 mb-4 bg-customWhite border-gray-500"
+            maxLength={200}
+          />
+        )}
+
+        {isLoading && (
+          <div id="loader" className=" relative h-full ">
+            <div id="box"></div>
+            <div id="hill"></div>
+          </div>
+        )}
+
+        {soundUrl && (
+          <>
+            <Canvas
+              className="h-full"
+              camera={{
+                position: [0, 0, 3],
+                fov: 75,
+              }}
+            >
+              <directionalLight position={[1, 1, 1]} intensity={2} castShadow />
+              <ambientLight intensity={0.5} />
+              <Blob />
+            </Canvas>
+          </>
+        )}
+      </div>
+      {!soundUrl && (
+        <Button
+          disabled={!inputValue}
+          onClick={startDify}
+          className="px-4 py-2 bg-customRed text-white rounded-md hover:bg-customYellow hover:text-black"
+        >
+          {isLoading ? "台本作成中..." : "送信"}
+        </Button>
+      )}
+      {soundUrl && <VoicePlayer />}
 
       {/* <Button className="ml-6" onClick={test}>
         test

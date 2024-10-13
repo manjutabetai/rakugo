@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 
 import "./globals.css";
 
-const dotGothic = localFont({
-  src: "./fonts/DotGothic16-Regular.ttf",
+const bizGothic = localFont({
+  src: "./fonts/BIZUDGothic-Regular.ttf",
   display: "swap",
 });
 
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={dotGothic.className}>{children}</body>
+      <body className={bizGothic.className}>{children}</body>
     </html>
   );
 }

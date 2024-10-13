@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
     // 成功した場合、生成したファイルの公開 URL を返す
     return NextResponse.json(
-      { result: "音声ファイルを Supabase に保存し、公開 URL を取得しました", url: publicUrlData.signedUrl },
+      { result: "音声の公開 URL を取得しました", url: publicUrlData.signedUrl },
       { status: 200 }
     );
   } catch (error) {

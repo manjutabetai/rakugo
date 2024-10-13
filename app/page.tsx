@@ -8,6 +8,8 @@ import Loading from "@/components/Loading";
 import ColorfulSpinner from "@/components/Loading";
 import Header from "@/components/Header";
 import { Card } from "@/components/ui/card";
+import { Play } from "lucide-react";
+import VoicePlayer from "@/components/VoicePlayer";
 
 interface IsPlayContextType {
   isPlay: boolean;
@@ -48,18 +50,21 @@ export default function Home() {
         }}
       >
         <Header />
+
         <Suspense fallback={<ColorfulSpinner />}>
           {/* 上部 */}
           <section className="pt-20 pb-12">
             <div className="w-full px-22">
-              <div className="max-w-screen-lg mx-auto flex justify-between w-full">
+              <div className="max-w-screen-lg mx-auto flex justify-between w-full h-full">
                 {/* h1 h2 */}
                 <div className="flex flex-col items-center">
+                  {/* h1 */}
                   <div>
                     <h1 className="text-5xl mb-12 leading-tight ">
                       あなたの失敗大丈夫！AIが心に寄り添い、元気をお届け！
                     </h1>
                   </div>
+                  {/* パラグラフ */}
                   <div>
                     <p className="leading-relaxed font-bold my-0">
                       落ち込んだ時や悩んだ時、誰かに話したくてもなかなか相談できないことってありますよね。そんな時は、私たちのAIにお任せ！あなたの失敗談や悩みを聞いて、ちょっと元気が出るようなアドバイスや励ましの言葉を音声でお届けします。いつでも、どこでも、気軽に話せるあなた専用の応援団です！
@@ -68,22 +73,6 @@ export default function Home() {
                 </div>
 
                 <InputArea />
-                {/* <Canvas
-                  className="absolute"
-                  camera={{
-                    position: [0, 0, 10],
-                    fov: 75,
-                  }}
-                > */}
-
-                {/* <directionalLight
-                    position={[1, 1, 1]}
-                    intensity={2}
-                    castShadow
-                  />
-                  <ambientLight intensity={0.5} />
-                  <Blob />
-                </Canvas> */}
               </div>
             </div>
           </section>
