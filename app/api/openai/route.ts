@@ -19,7 +19,7 @@ const sanitizeFilename = (filename: string) => filename.replace(/[\/\\?%*:|"<>]/
 export async function POST(req: Request) {
   try {
     // リクエストボディからプロンプトを取得
-    const { prompt, inputValue } = await req.json();
+    const { prompt, finalInputValue } = await req.json();
     console.log("gptに接続。。。: ", prompt);
    
     // OpenAI の音声生成 API を呼び出し
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     // 公開 URL を取得
     const { data: publicUrlData, error: publicUrlError } = await supabase.storage
       .from("audio-bucket")
-      .createSignedUrl(filePath,3000);
+      .createSignedUrl(filePath,1209600);// 60は1分 ,14days
 
     if (publicUrlError) {
       throw new Error(`Supabase 公開 URL の取得に失敗: ${publicUrlError.message}`);
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       .insert({
         audio_url: publicUrlData.signedUrl, // 音声ファイルの公開 URL
         prompt: prompt.result, // プロンプトのテキスト
-        inputValue:inputValue
+        input_value:finalInputValue //ユーザーが入力したテキスト
       });
 
     if (insertError) {

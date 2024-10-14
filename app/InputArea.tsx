@@ -11,9 +11,9 @@ import VoicePlayer from "@/components/VoicePlayer";
 
 import { OrbitControls } from "@react-three/drei";
 import { Input } from "@/components/ui/input";
+import { Post } from "@/types/Post";
 
 const InputArea = () => {
-  const [response, setResponse] = useState("");
   const [volume, setVolume] = useState(0.05);
   const [inputValue, setInputValue] = useState("");
   const [name, setName] = useState("");
@@ -21,29 +21,22 @@ const InputArea = () => {
   const { isPlay, setIsPlay, soundUrl, setSoundUrl, isLoading, setIsLoading } =
     useContext(IsPlayContext);
 
-  const backSoundRef = useRef<Howl | null>(null);
-
-  useEffect(() => {
-    if (backSoundRef.current) {
-      backSoundRef.current.volume(volume);
-    }
-  }, [volume]);
+  let finalInputValue = "";
 
   const startDify = async () => {
     setIsLoading(true);
     console.log("name: " + name);
-    let finalInputValue = inputValue;
+    finalInputValue = inputValue;
     // ニックネームがある場合は名前を追加する
     if (name) {
       console.log("true");
-      finalInputValue = `"投稿者の名前は「${name}」さんです。"` + inputValue;
+      finalInputValue =
+        `"ラジオネーム「${name}」さんの投稿です。"` + inputValue;
     } else {
       finalInputValue = `"投稿者の名前は「匿名ちゃん」さんです。"` + inputValue;
     }
 
     console.log("input value: " + finalInputValue);
-
-    setResponse("");
 
     try {
       const difyRes = await fetch("/api/dify", {
@@ -61,20 +54,22 @@ const InputArea = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error calling Dify API:", error);
-      setResponse("エラーが発生しました。もう一度お試しください。");
       setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getGpt = async (prompt: string, inputValue: string) => {
+  const getGpt = async (prompt: string, finalInputValue: string) => {
     try {
       const response = await fetch("/api/openai", {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: prompt, inputValue: inputValue }),
+        body: JSON.stringify({
+          prompt: prompt,
+          finalInputValue: finalInputValue,
+        }),
       });
 
       // ステータスコードをログに出力
@@ -97,7 +92,6 @@ const InputArea = () => {
       // speech(filePath);
     } catch (error) {
       console.error(error);
-      setResponse("エラーが発生しました");
     }
   };
 
