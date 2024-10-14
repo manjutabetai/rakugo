@@ -18,6 +18,8 @@ const PostFeed = () => {
         const response = await axios.get("/api/spabase"); // 非同期処理を待つ
         setPosts(response.data); // データ部分をセット
         // postsが更新されたときにHowlインスタンスを更新
+
+        console.log(posts);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }

@@ -8,6 +8,7 @@ import ColorfulSpinner from "@/components/Loading";
 import Header from "@/components/Header";
 import { Card } from "@/components/ui/card";
 import PostFeed from "@/components/PostFeed";
+import RadioHeader from "@/components/RadioHeader";
 
 interface IsPlayContextType {
   isPlay: boolean;
@@ -45,6 +46,7 @@ export default function Home() {
         }}
       >
         <Header />
+        <RadioHeader />
 
         <Suspense fallback={<ColorfulSpinner />}>
           {/* 上部 */}
@@ -56,13 +58,13 @@ export default function Home() {
                   {/* h1 */}
                   <div>
                     <h1 className="text-5xl mb-12 leading-tight ">
-                      あなたの失敗大丈夫！AIが心に寄り添い、元気をお届け！
+                      「真面目に、でも笑いながら。パーソナリティが優しく答えるラジオ相談室」
                     </h1>
                   </div>
                   {/* パラグラフ */}
                   <div>
                     <p className="leading-relaxed font-bold my-0">
-                      落ち込んだ時や悩んだ時、誰かに話したくてもなかなか相談できないことってありますよね。そんな時は、私たちのAIにお任せ！あなたの失敗談や悩みを聞いて、ちょっと元気が出るようなアドバイスや励ましの言葉を音声でお届けします。いつでも、どこでも、気軽に話せるあなた専用の応援団です！
+                      あなたがラジオに投稿したかのような感覚で、AIパーソナリティが楽しくお答えします。このサイトは架空の番組を楽しむためのフィクション体験です。
                     </p>
                   </div>
                 </div>
