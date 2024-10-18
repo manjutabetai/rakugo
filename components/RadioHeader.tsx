@@ -14,34 +14,42 @@ export default function RadioHeader() {
     return () => clearInterval(timer);
   }, []);
 
-  const handlePlay = () => {
-    const newSound = new Howl({
-      src: ["/271_long_BPM110.mp3"],
-      html5: true,
-      format: "mp3",
+  const soundPath = "/271_long_BPM110.mp3";
 
-      onload: () => {
-        console.log("音声ファイルが正常にロードされました");
-      },
-      onloaderror: (id, error) => {
-        console.error("音声のロード中にエラーが発生しました:", error);
-      },
-      onplayerror: (id, error) => {
-        console.error("音声の再生中にエラーが発生しました:", error);
-        newSound.play(); // 自動的に再試行
-      },
-      onend: () => {
-        console.log("音声の再生が終了しました");
+  useEffect(() => {
+    if (!speechSoundRef) {
+      const newSound = new Howl({
+        src: [soundPath],
+        html5: true,
+        format: "mp3",
+        onload: () => console.log("音声ファイルが正常にロードされました"),
+        onend: () => {
+          console.log("音声の再生が終了しました");
+          setIsPlay(false);
+        },
+      });
+      setSpeechSoundRef(newSound);
+    }
+
+    // コンポーネントがアンマウントされたらクリーンアップ
+    return () => {
+      speechSoundRef?.unload();
+    };
+  }, [speechSoundRef, setIsPlay]);
+
+  const handleClick = () => {
+    if (soundPath && speechSoundRef) {
+      if (speechSoundRef.playing()) {
+        speechSoundRef.pause();
         setIsPlay(false);
-      },
-    });
-
-    setSpeechSoundRef(newSound);
-    speechSoundRef?.volume(0.5);
-    speechSoundRef?.play();
-    setIsPlay(true);
+      } else {
+        speechSoundRef.play();
+        setIsPlay(true);
+      }
+    } else {
+      console.error("Howlでエラーが出ました");
+    }
   };
-
   return (
     <div className="w-full bg-customWhite ">
       <div className="container mx-auto">
@@ -67,13 +75,17 @@ export default function RadioHeader() {
             <p className="text-sm text-gray-600">KIKIMIMI Radio</p>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="bg-[#f4a7a7] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-              <span className="font-semibold">Play</span>
+            <div
+              className="bg-customRed text-white  py-2 flex items-center space-x-2 justify-center w-32
+            "
+              style={{ borderRadius: "4px" }}
+            >
+              <span className="font-semibold">{isPlay ? "Pause" : "Play"}</span>{" "}
               {isPlay ? (
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={handlePlay}
+                  onClick={handleClick}
                   className="rounded-full"
                 >
                   <Pause className="h-4 w-4" />
@@ -82,17 +94,20 @@ export default function RadioHeader() {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={handlePlay}
+                  onClick={handleClick}
                   className="rounded-full"
                 >
-                  <Play className="h-4 w-4" />
+                  <Play className="h-4 w-4 " />
                 </Button>
               )}
             </div>
           </div>
         </div>
-        <div className="py-2 overflow-hidden bg-[#f4a7a7]">
-          <MarqueeText text="現在放送中: 真面目に、でも笑いながら。パーソナリティが優しく答えるラジオ相談室" />
+        <div className="py-2 overflow-hidden bg-customYellow">
+          <MarqueeText
+            text="募集中!!: 「あなたの話、聞かせてください」
+仕事、恋愛、人間関係…モヤモヤしてる？そんな時は、パーソナリティにメッセージを送ってみて！今の気持ち、言葉にしてみませんか？"
+          />
         </div>
       </div>
     </div>
@@ -103,13 +118,13 @@ function MarqueeText({ text }: { text: string }) {
   return (
     <div className="relative flex overflow-x-hidden">
       <div className="animate-marquee whitespace-nowrap py-2">
-        <span className="text-lg text-white mx-4">{text}</span>
-        <span className="text-lg text-white mx-4">{text}</span>
+        <span className="text-lg mx-4">{text}</span>
+        {/* <span className="text-lg mx-4">{text}</span> */}
       </div>
-      <div className="absolute top-0 animate-marquee2 whitespace-nowrap py-2">
+      {/* <div className="absolute top-0  animate-marquee2 whitespace-nowrap py-2">
         <span className="text-lg text-white mx-4">{text}</span>
         <span className="text-lg text-white mx-4">{text}</span>
-      </div>
+      </div> */}
     </div>
   );
 }

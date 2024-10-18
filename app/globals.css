@@ -96,10 +96,34 @@ body{
   }
 }
 
-/* カラー　
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 
-#f2ebdf 白
-#f83331　赤
-#ffd258 黄色
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
 
-*/
+@keyframes marquee2 {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee2 {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee2 30s linear infinite;
+  animation-delay: -15s; /* 新しいループの開始時間を調整 */
+}
+

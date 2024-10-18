@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
+import RadioStationHomepage from "./NewPage";
 
 const bizGothic = localFont({
   src: "./fonts/BIZUDGothic-Regular.ttf",
@@ -20,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={bizGothic.className}>{children}</body>
+      <body className={bizGothic.className}>
+        <RadioStationHomepage />
+      </body>
     </html>
   );
 }
