@@ -1,7 +1,13 @@
-import { Play, Volume2 } from "lucide-react";
+"use client";
+import { MessageSquarePlus, Play, Volume2 } from "lucide-react";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import ConcernSubmission from "@/components/ConcernSubmission";
+import { useState } from "react";
 
 export default function RadioStationHomepage() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -76,62 +82,60 @@ export default function RadioStationHomepage() {
 
       {/* Main Content */}
       <main className="container mx-auto p-4">
-        <div
-          className="bg-gradient-to-r from-customYellow to-yellow-400 text-black rounded-lg p-6 mb-8"
-          style={{ borderRadius: "10px" }}
-        >
+        <div className="bg-gradient-to-r from-customYellow to-yellow-400 text-black rounded-lg p-6 mb-8">
           <div className="flex flex-col md:flex-row">
             <div className="md:w-2/3 pr-4">
               <div className="flex items-center mb-2">
-                <span className="bg-red-500 text-xs font-bold px-2 py-1 rounded mr-2">
+                <span className="bg-customPink text-xs font-bold px-2 py-1 rounded mr-2">
                   NOW ON AIR
                 </span>
                 <span className="text-sm">07:00-08:55</span>
               </div>
-              <h2 className="text-3xl font-bold mb-2">Green Jacket Part 2</h2>
-              <p className="text-sm mb-4">タケ小山</p>
+              <div className="flex items-center justify-start">
+                <h2 className="text-3xl font-bold mb-2"> AI part 2</h2>
+
+                {/* 再生ボタン */}
+                <div className="flex fex items-center justify-start  p-4 rounded-b-lg ml-10">
+                  <div className="flex flex-col items-center justify-between gap-4">
+                    <button className="bg-customOrange text-white px-4 py-2 rounded-full flex items-center">
+                      <Play className="w-4 h-4 mr-2" />
+                      Listen Live
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm mb-4">トトカルチョ kei</p>
+
               <p className="text-sm">
-                あなたの街のプロゴルファー・タケ小山が発送する「Green
-                Jacket」。日本のゴルフ情報はもちろんのこと、土曜の朝に聴いているアメリカのゴルフツアー情報など世界のゴルフ情報が手に取るように分かります。さらに、これからのゴルフ界を担う...
+                「トトカルチョKei」は、リスナーの悩みを独自の視点で解決する、ユニークなAIパーソナリティ。リラックスした口調と軽快なテンポで、真面目な相談からちょっとした雑談まで、まるで友人のように温かく答えてくれます。トトカルチョKeiの魅力は、そのウィットに富んだアドバイスと、どんな時でも前向きな姿勢。相談するだけで、心が少し軽くなり、次の一歩が踏み出せるような番組です。
               </p>
+
+              <div className="mt-4">
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                    >
+                      <MessageSquarePlus className="w-4 h-4 mr-2" />
+                      投稿する
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-gray-900 border-gray-700">
+                    <ConcernSubmission />
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
+
             <div className="md:w-1/3 mt-4 md:mt-0">
               <Image
-                src="/placeholder.svg?height=200&width=350"
+                src="/avatar.jpg"
                 alt="DJ Takeyama"
                 width={350}
                 height={200}
                 className="rounded-lg"
-              />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex space-x-2">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center">
-                <Play className="w-4 h-4 mr-2" />
-                Listen Live
-              </button>
-              <Volume2 className="w-6 h-6" />
-              <input type="range" className="w-24" />
-            </div>
-            <div className="flex space-x-2">
-              <Image
-                src="/placeholder.svg?height=30&width=80"
-                alt="Sponsor 1"
-                width={80}
-                height={30}
-              />
-              <Image
-                src="/placeholder.svg?height=30&width=80"
-                alt="Sponsor 2"
-                width={80}
-                height={30}
-              />
-              <Image
-                src="/placeholder.svg?height=30&width=80"
-                alt="Sponsor 3"
-                width={80}
-                height={30}
               />
             </div>
           </div>
@@ -140,7 +144,7 @@ export default function RadioStationHomepage() {
         {/* Now Playing Ticker */}
         <div className="bg-black text-white p-2 mb-8 overflow-hidden">
           <p className="animate-marquee whitespace-nowrap">
-            ALWAYS SOMETHING THERE TO REMIND ME / NEKED EYE
+            皆さんからのお便りをお待ちしています /
           </p>
         </div>
 

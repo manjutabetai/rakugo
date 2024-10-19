@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import "./globals.css";
 import RadioStationHomepage from "./NewPage";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
 const bizGothic = localFont({
   src: "./fonts/BIZUDGothic-Regular.ttf",
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={bizGothic.className}>
+        <WelcomeDialog />
         <RadioStationHomepage />
       </body>
     </html>
