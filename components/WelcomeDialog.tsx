@@ -16,17 +16,8 @@ import { getNews, getGpt } from "@/lib/utils";
 export default function WelcomeDialog() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    radioUrl,
-    setRadioUrl,
-    isLoading,
-    setIsLoading,
-    isPlaying,
-    setIsPlaying,
-    messageResUrl,
-    setMessageResUrl,
-    setIsTuning,
-  } = useContext(IsSoundUrlContext);
+  const { radioUrl, setRadioUrl, setIsLoading, setIsTuning } =
+    useContext(IsSoundUrlContext);
 
   useEffect(() => {
     setIsOpen(true);

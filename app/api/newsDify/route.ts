@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import axios from "axios";
 
 const API_KEY = process.env.NEWS_DIFY_API_KEY; // 環境変数にAPIキーを設定する

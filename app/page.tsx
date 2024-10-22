@@ -1,13 +1,6 @@
 "use client";
 import Image from "next/image";
-import {
-  createContext,
-  useState,
-  useRef,
-  RefObject,
-  useEffect,
-  useContext,
-} from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 
 import { MessageSquarePlus } from "lucide-react";
 
@@ -18,25 +11,13 @@ import Player from "@/components/Player";
 
 import { Howl } from "howler";
 import { IsSoundUrlContext } from "@/components/IsSoundUrlContext";
-import { getNews, getGpt } from "@/lib/utils";
 
 export default function RadioStationHomepage() {
   const [isOpen, setIsOpen] = useState(false);
 
   const tuningSound = useRef<Howl | null>(null);
 
-  const {
-    radioUrl,
-    setRadioUrl,
-    isLoading,
-    setIsLoading,
-    isPlaying,
-    setIsPlaying,
-    messageResUrl,
-    setMessageResUrl,
-    isTuning,
-    setIsTuning,
-  } = useContext(IsSoundUrlContext);
+  const { isLoading, isTuning, setIsTuning } = useContext(IsSoundUrlContext);
 
   useEffect(() => {
     console.log("mainPageのuseEffect isLoadingに依存");

@@ -6,7 +6,7 @@ import { IsSoundUrlContext } from "./IsSoundUrlContext";
 
 export default function LoadingOverlay() {
   const [noiseDataUrl, setNoiseDataUrl] = useState("");
-  const { isLoading, setIsLoading } = useContext(IsSoundUrlContext);
+  const { isLoading } = useContext(IsSoundUrlContext);
 
   useEffect(() => {
     const canvas = document.createElement("canvas");

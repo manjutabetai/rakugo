@@ -21,7 +21,7 @@ const ConcernSubmission = ({
 }) => {
   const [name, setName] = useState("");
   const [concern, setConcern] = useState("");
-  const { isLoading, setIsLoading, messageResUrl, setMessageResUrl } =
+  const { isLoading, setIsLoading, setMessageResUrl } =
     useContext(IsSoundUrlContext); // useContext を使用して soundUrl と setRadioUrl を取得
 
   const handleSubmit = async (event: React.FormEvent) => {

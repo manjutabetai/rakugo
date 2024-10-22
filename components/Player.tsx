@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext, useState } from "react";
 import { Button } from "./ui/button";
 import { Play, Pause } from "lucide-react";
 import { Howl } from "howler";
-import { cn, getGpt, getNews } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { IsSoundUrlContext } from "@/components/IsSoundUrlContext";
 
@@ -13,27 +13,9 @@ const Player = () => {
 
   const [isMessage, setIsMessage] = useState(false);
 
-  const {
-    radioUrl,
-    setRadioUrl,
-    isLoading,
-    setIsLoading,
-    isPlaying,
-    setIsPlaying,
-    messageResUrl,
-    setMessageResUrl,
-  } = useContext(IsSoundUrlContext);
+  const { radioUrl, isLoading, isPlaying, setIsPlaying, messageResUrl } =
+    useContext(IsSoundUrlContext);
 
-  const test = () => {
-    setRadioUrl(
-      "https://qowgsmftnhetuvgiudox.supabase.co/storage/v1/object/sign/audio-bucket/audio/2024-10-22T00-53-46-158Z?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdWRpby1idWNrZXQvYXVkaW8vMjAyNC0xMC0yMlQwMC01My00Ni0xNThaIiwiaWF0IjoxNzI5NTU4NDMwLCJleHAiOjE3MzA3NjgwMzB9.l-V2ToZbBHntfeYYjzalHQJ4JzTuxXIfg_xzBzhkRhc"
-    );
-  };
-  const test2 = () => {
-    setMessageResUrl(
-      "https://qowgsmftnhetuvgiudox.supabase.co/storage/v1/object/sign/audio-bucket/audio/2024-10-22T00-52-39-224Z?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdWRpby1idWNrZXQvYXVkaW8vMjAyNC0xMC0yMlQwMC01Mi0zOS0yMjRaIiwiaWF0IjoxNzI5NTU4MzYzLCJleHAiOjE3MzA3Njc5NjN9.pT3fXCQergtexnw9pyT9RKxsGq_jKF1sdGFzOG2ePIc"
-    );
-  };
   // 初回ロード時
   useEffect(() => {
     console.log("player 初回ロード bgm初期化");
