@@ -13,7 +13,7 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 特殊文字を取り除く関数を定義
-const sanitizeFilename = (filename: string) => filename.replace(/[\/\\?%*:|"<>]/g, "");
+// const sanitizeFilename = (filename: string) => filename.replace(/[\/\\?%*:|"<>]/g, "");
 
 // POST リクエストを処理する関数
 export async function POST(req: Request) {

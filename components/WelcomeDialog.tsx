@@ -23,6 +23,7 @@ export default function WelcomeDialog() {
     setIsOpen(true);
     const listenHandle = async () => {
       setIsLoading(true);
+
       try {
         // difyから
         const newsData = await getNews();

@@ -51,7 +51,7 @@ export const sendMessage = async (
   inputValue:string,
   name:string)=>{
 
-  var finalInputValue;
+  let finalInputValue;
 
 
   if (name) {
