@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
-import RadioStationHomepage from "./NewPage";
 import WelcomeDialog from "@/components/WelcomeDialog";
+import Header from "@/components/Header";
+import { IsSoundUrlProvider } from "@/components/IsSoundUrlContext";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 const bizGothic = localFont({
   src: "./fonts/BIZUDGothic-Regular.ttf",
@@ -22,9 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={bizGothic.className}>
-        <WelcomeDialog />
-        <RadioStationHomepage />
+      <body className={`${bizGothic.className} bg-black`}>
+        <IsSoundUrlProvider>
+          <Header />
+          <WelcomeDialog />
+          {children}
+          <LoadingOverlay />
+        </IsSoundUrlProvider>
       </body>
     </html>
   );

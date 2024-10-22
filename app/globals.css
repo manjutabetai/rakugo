@@ -127,3 +127,18 @@ body{
   animation-delay: -15s; /* 新しいループの開始時間を調整 */
 }
 
+
+/* 再生中アニメ */
+
+@keyframes wave {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-wave {
+  animation: wave 1s infinite;
+}

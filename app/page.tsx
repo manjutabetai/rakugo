@@ -1,126 +1,161 @@
 "use client";
+import Image from "next/image";
+import {
+  createContext,
+  useState,
+  useRef,
+  RefObject,
+  useEffect,
+  useContext,
+} from "react";
 
-import Blob from "./_blobs/Blob";
-import { Canvas } from "@react-three/fiber";
-import { createContext, Suspense, useState } from "react";
-import InputArea from "./InputArea";
-import ColorfulSpinner from "@/components/Loading";
-import Header from "@/components/Header";
-import { Card } from "@/components/ui/card";
-import PostFeed from "@/components/PostFeed";
-import RadioHeader from "@/components/RadioHeader";
+import { MessageSquarePlus } from "lucide-react";
 
-interface IsPlayContextType {
-  isPlay: boolean;
-  soundUrl: string;
-  isLoading: boolean;
-  setIsPlay: (value: boolean) => void;
-  setIsLoading: (value: boolean) => void;
-  setSoundUrl: (value: string) => void;
-}
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ConcernSubmission from "@/components/ConcernSubmission";
+import { Button } from "@/components/ui/button";
+import Player from "@/components/Player";
 
-export const IsPlayContext = createContext<IsPlayContextType>({
-  isPlay: false,
-  isLoading: false,
-  soundUrl: "",
-  setIsPlay: () => {},
-  setSoundUrl: () => {},
-  setIsLoading: () => {},
-});
+import { Howl } from "howler";
+import { IsSoundUrlContext } from "@/components/IsSoundUrlContext";
+import { getNews, getGpt } from "@/lib/utils";
 
-export default function Home() {
-  const [isPlay, setIsPlay] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [soundUrl, setSoundUrl] = useState("");
+export default function RadioStationHomepage() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const tuningSound = useRef<Howl | null>(null);
+
+  const {
+    radioUrl,
+    setRadioUrl,
+    isLoading,
+    setIsLoading,
+    isPlaying,
+    setIsPlaying,
+    messageResUrl,
+    setMessageResUrl,
+    isTuning,
+    setIsTuning,
+  } = useContext(IsSoundUrlContext);
+
+  useEffect(() => {
+    console.log("mainPageのuseEffect isLoadingに依存");
+    if (!tuningSound.current) {
+      tuningSound.current = new Howl({
+        src: ["/radio-tuning.wav"],
+        html5: true,
+        volume: 0.3,
+        loop: true,
+      });
+    }
+
+    if (isLoading && isTuning) {
+      tuningSound.current?.play();
+    } else {
+      tuningSound.current?.pause();
+      setIsTuning(false);
+    }
+  }, [isTuning, isLoading]);
 
   return (
-    <>
-      <IsPlayContext.Provider
-        value={{
-          isPlay,
-          setIsPlay,
-          soundUrl,
-          setSoundUrl,
-          isLoading,
-          setIsLoading,
-        }}
-      >
-        <Header />
-        <RadioHeader />
-
-        <Suspense fallback={<ColorfulSpinner />}>
-          {/* 上部 */}
-          <section className="pt-20 pb-12">
-            <div className="w-full px-22">
-              <div className="max-w-screen-lg mx-auto flex justify-between w-full h-full">
-                {/* h1 h2 */}
-                <div className="flex flex-col items-center">
-                  {/* h1 */}
-                  <div>
-                    <h1 className="text-5xl mb-12 leading-tight ">
-                      「真面目に、でも笑いながら。パーソナリティが優しく答えるラジオ相談室」
-                    </h1>
-                  </div>
-                  {/* パラグラフ */}
-                  <div>
-                    <p className="leading-relaxed font-bold my-0">
-                      あなたがラジオに投稿したかのような感覚で、AIパーソナリティが楽しくお答えします。このサイトは架空の番組を楽しむためのフィクション体験です。
-                    </p>
-                  </div>
-                </div>
-
-                <InputArea />
+    <div className="min-h-screen bg-black text-white">
+      <main className="container mx-auto p-4">
+        <div className="bg-gradient-to-r from-customYellow to-yellow-400 text-black rounded-lg p-6 mb-8">
+          <div className="flex flex-col md:flex-row">
+            <div className="md:w-2/3 pr-4">
+              <div className="flex items-center mb-2">
+                <span className="bg-customPink text-xs font-bold px-2 py-1 rounded mr-2">
+                  NOW ON AIR
+                </span>
+                <span className="text-sm">07:00-08:55</span>
               </div>
-            </div>
-          </section>
-          <PostFeed />
+              <div className="flex items-center justify-start">
+                <h2 className="text-3xl font-bold mb-2"> うすーいラジオ</h2>
 
-          {/* {isLoading ? <></> : <InputArea />} */}
-        </Suspense>
-      </IsPlayContext.Provider>
-    </>
+                {/*  ListenLive 再生ボタン */}
+              </div>
+
+              <p className="text-sm mb-4">トトカルチョ kei</p>
+
+              <p className="text-sm">
+                「トトカルチョKei」は、リスナーの悩みを独自の視点で解決する、ユニークなAIパーソナリティ。リラックスした口調と軽快なテンポで、真面目な相談からちょっとした雑談まで、まるで友人のように温かく答えてくれます。トトカルチョKeiの魅力は、そのウィットに富んだアドバイスと、どんな時でも前向きな姿勢。相談するだけで、心が少し軽くなり、次の一歩が踏み出せるような番組です。
+              </p>
+
+              <div className="mt-4 mb-4">
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+                    >
+                      <MessageSquarePlus className="w-4 h-4 mr-2" />
+                      投稿する
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-gray-900 border-gray-700">
+                    <ConcernSubmission setIsOpen={setIsOpen} />
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <Player />
+            </div>
+
+            <div className="md:w-1/3 mt-4 md:mt-0">
+              <Image
+                src="/avatar.jpg"
+                alt="DJ Takeyama"
+                width={350}
+                height={200}
+                className="rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Now Playing Ticker */}
+        <div className="bg-black text-white p-2 mb-8 overflow-hidden">
+          <p className="animate-marquee whitespace-nowrap">
+            皆さんからのお便りをお待ちしています /
+          </p>
+        </div>
+
+        {/* Program Carousel */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gray-800 p-4 rounded-lg">
+            {/* <Image
+                src="/placeholder.svg?height=150&width=300"
+                alt="Program 1"
+                width={300}
+                height={150}
+                className="rounded-lg mb-2"
+              /> */}
+            <h3 className="text-xl font-bold">Third Stone From The Sun</h3>
+            <p className="text-sm">The First & Third Sunday 22:00 to 23:00</p>
+          </div>
+          <div className="bg-gray-800 p-4 rounded-lg">
+            {/* <Image
+                src="/placeholder.svg?height=150&width=300"
+                alt="Program 2"
+                width={300}
+                height={150}
+                className="rounded-lg mb-2"
+              /> */}
+            <h3 className="text-xl font-bold">レディオ デ チャカチー</h3>
+            <p className="text-sm">The Second & Fourth Sunday 22:00 to 23:00</p>
+          </div>
+          <div className="bg-gray-800 p-4 rounded-lg">
+            {/* <Image
+                src="/placeholder.svg?height=150&width=300"
+                alt="Program 3"
+                width={300}
+                height={150}
+                className="rounded-lg mb-2"
+              /> */}
+            <h3 className="text-xl font-bold">HERE COMES THE MOON</h3>
+            <p className="text-sm">Every Monday 22:00 to 23:00</p>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
-
-// const posts = [
-//   {
-//     id: 1,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+1",
-//     content: "これは投稿1の内容です。",
-//   },
-//   {
-//     id: 2,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+2",
-//     content: "これは投稿2の内容です。",
-//   },
-//   {
-//     id: 3,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+3",
-//     content: "これは投稿3の内容です。",
-//   },
-//   {
-//     id: 4,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+4",
-//     content: "これは投稿4の内容です。",
-//   },
-//   {
-//     id: 5,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+5",
-//     content: "これは投稿5の内容です。",
-//   },
-//   {
-//     id: 6,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+6",
-//     content: "これは投稿6の内容です。",
-//   },
-//   {
-//     id: 7,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+7",
-//     content: "これは投稿7の内容です。",
-//   },
-//   {
-//     id: 8,
-//     image: "https://via.placeholder.com/200x150.png?text=Post+8",
-//     content: "これは投稿8の内容です。",
-//   },
-// ];
